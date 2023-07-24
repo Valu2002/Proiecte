@@ -1,0 +1,29 @@
+Se considera urmatoarele clase: 
+
+Data ce contine atributele: zi(int), luna(sir de caractere de lungime fixa 20), an(int). 
+
+Proprietar ce contine atributele: nume(sir de caractere de lungime variabila), data_nasterii(Data). 
+
+Casa ce contine atributele: oras(sir de caractere de lungime fixa 50), nrProprietari(int), Prop(vector de obiecte de tip Proprietar). 
+
+ 
+
+Definiti clasele si completati-le cu metode si supraincarcari de operatori pentru a permite in functia main() urmatoarele operatii: 
+
+Data d1(15,”iulie”,1975), d2=d1; 
+
+Proprietar p1(“Ionescu”,d1), p2(“Popescu”,2,”ianuarie”,1980); 
+
+Casa c1(“Bucuresti”), c2, c3; 
+
+c1+=p1; // adauga proprietarul p1 in lista de proprietari din casa c1 
+
+c1+=p2; // adauga proprietarul p2 in lista de proprietari din casa c1 
+
+cout<<c1; 
+
+cin>>c2; 
+
+c3 = c2; 
+
+cout<<c3; 

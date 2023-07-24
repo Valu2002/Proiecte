@@ -1,0 +1,89 @@
+--1. Ob?ine?i numele ?i adresele clien?ilor care au plasat comenzi în între lunile februarie ?i mai.
+
+WITH comenzi_lunare AS (
+  SELECT c.id_client
+  FROM CLIENTI c
+  JOIN COMENZI co ON co.id_client = c.id_client
+  WHERE EXTRACT(MONTH FROM co.data) BETWEEN 2 AND 5
+  GROUP BY c.id_client
+)
+SELECT c.nume, c.adresa
+FROM CLIENTI c
+JOIN comenzi_lunare cl ON cl.id_client = c.id_client;
+
+--2.Ob?ine?i numele produselor ?i cantitatea total? de produse disponibile în stoc 
+--pentru fiecare categorie de produse.
+
+SELECT c.nume_categorie, SUM(s.cantitate) AS cantitate_totala
+FROM PRODUSE p
+JOIN CATEGORII c ON c.id_produs = p.id_produs
+JOIN STOCURI s ON s.id_produs = p.id_produs
+GROUP BY c.nume_categorie
+ORDER BY cantitate_totala DESC;
+
+--3.Ob?ine?i numele angaja?ilor ?i num?rul total de evenimente organizate de compania lor, 
+--afi?ând 0 pentru angaja?ii care nu au organizat niciun eveniment.
+
+SELECT a.nume, a.prenume, NVL(e.numar_evenimente, 0) AS numar_evenimente
+FROM ANGAJATI a
+LEFT JOIN (
+  SELECT ev.id_companie, COUNT(ev.id_companie) AS numar_evenimente
+  FROM EVENIMENT ev
+  GROUP BY ev.id_companie
+) e ON e.id_companie = a.id_companie;
+
+
+--4.Ob?ine?i numele, adresele clien?ilor si data primei comenzi plasate de fiecare client.
+
+WITH prima_comanda AS (
+  SELECT id_client, MIN(data) AS data_prima_comanda
+  FROM COMENZI
+  GROUP BY id_client
+)
+SELECT c.nume, c.adresa, pc.data_prima_comanda
+FROM CLIENTI c
+JOIN prima_comanda pc ON pc.id_client = c.id_client;
+
+
+--5.Obtineti produsul cu cele mai multe recenzii
+
+SELECT *
+FROM (SELECT p.nume, count(r.id_recenzie) as nr_recenzii
+      FROM produse p JOIN recenzii r on (r.id_produs = p.id_produs) 
+      GROUP BY p.nume
+      ORDER BY count(r.id_recenzie) desc)
+WHERE rownum <=1;
+
+--1. Sa se mareasca cu 25% pretul produselor de la compania Aliax. 
+--Sa se anuleze modificarile. 
+update produse
+set pret = pret + 0.25 * pret
+where id_produs in (select id_produs 
+                    from produse
+                    where id_companie = (select id_companie
+                                        from companie
+                                        where nume_companie = 'Aliax')
+                    );
+select * from produse;
+rollback;
+
+--2. Sa se stearga promotiile care nu se afla intre lunile ianuarie si mai. Sa se anuleze modificarile. 
+
+delete from promotii
+where (data_inceput,data_sfarsit) in(select data_inceput, data_sfarsit
+                                        from promotii
+                                        where extract(month from data_inceput)not between 1 and 5
+                                        and extract(month from data_sfarsit)not between 1 and 5);
+select * from promotii;
+rollback;
+
+--3. Sa se mareasca cantitatea cu 100 de la stocurile care au console(PS5, Xbox, Nintendo). 
+--Sa se anuleze modificarile.
+
+update stocuri
+set cantitate = cantitate + 100
+where id_produs in (select id_produs
+                    from produse 
+                    where id_produs in (49,65,81));
+select * from stocuri;
+rollback;

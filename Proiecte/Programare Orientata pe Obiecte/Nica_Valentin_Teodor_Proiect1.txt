@@ -1,0 +1,311 @@
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+class Data
+{
+    int zi;
+    char *luna;
+    int an;
+
+public:
+
+    Data();
+    Data(int x, char *y, int z);
+    Data(const Data&);
+    ~Data();
+    Data& operator=(const Data&);
+    int get_zi(){return zi;}
+    void set_zi(int zi){this->zi = zi;}
+    char* get_luna(){return luna;}
+    void set_luna(char* luna){this->luna = luna;}
+    int get_an(){return an;}
+    void set_an(int an){this->an = an;}
+    friend istream& operator >> (istream&, Data&);
+    friend ostream& operator << (ostream&, Data&);
+    friend class Proprietar;
+
+};
+
+Data::Data()
+{
+    this->luna = new char [21];
+}
+
+Data::Data(int x, char *y, int z)
+{
+    this->zi = x;
+    this->luna = new char[strlen(y) + 1];
+    strcpy(this->luna,y);
+    this->an = z;
+}
+
+Data::Data(const Data& ob)
+{
+    this->zi = ob.zi;
+    this->luna = new char[strlen(ob.luna) + 1];
+    strcpy(this->luna,ob.luna);
+    this->an = ob.an;
+}
+
+Data::~Data()
+{
+    if(this->luna != NULL)
+        delete[] this->luna;
+}
+
+Data& Data::operator=(const Data& ob)
+{
+    if(this != &ob)
+    {
+        this->zi = ob.zi;
+        if(this->luna != NULL) delete [] this->luna;
+        this->luna = new char[strlen(ob.luna) + 1];
+        strcpy(this->luna, ob.luna);
+        this->an = ob.an;
+    }
+    return *this;
+}
+
+istream& operator >> (istream& in, Data& d)
+{
+    in >> d.zi;
+    char aux[255];
+    in >> aux;
+    d.luna = new char[strlen(aux)+1];
+    strcpy(d.luna,aux);
+    in >> d.an;
+    return in;
+}
+
+ostream& operator <<(ostream& out, Data& d)
+{
+    out << d.zi << " " << d.luna << " " << d.an << endl;
+    return out;
+}
+
+class Proprietar
+{
+    char *nume;
+    Data data_nasterii;
+
+public:
+
+    Proprietar();
+    Proprietar(char *n, Data data_nasterii);
+    Proprietar(char *n, int d, char *m, int y);
+    Proprietar(const Proprietar&);
+    ~Proprietar();
+    Proprietar& operator=(const Proprietar&);
+    friend istream& operator >> (istream&, Proprietar&);
+    friend ostream& operator << (ostream&, Proprietar&);
+    friend class Casa;
+};
+
+Proprietar::Proprietar()
+{
+    this->nume = new char [255];
+    this->data_nasterii.set_luna(NULL);
+}
+
+Proprietar::Proprietar(char *n, Data data_nasterii)
+{
+    this->nume = new char[strlen(n) + 1];
+    strcpy(this->nume,n);
+    this->data_nasterii = data_nasterii;
+}
+
+Proprietar::Proprietar(char *n, int d, char *m, int y)
+{
+    this->nume = new char[strlen(n) + 1];
+    strcpy(this->nume,n);
+    this->data_nasterii.set_zi(d);
+    this->data_nasterii.set_luna(m);
+    this->data_nasterii.set_an(y);
+}
+
+Proprietar::Proprietar(const Proprietar& ob)
+{
+    this->nume = new char[strlen(ob.nume) + 1];
+    strcpy(this->nume,ob.nume);
+    this->data_nasterii = ob.data_nasterii;
+}
+
+Proprietar::~Proprietar()
+{
+    if(this->nume != NULL)
+        delete[] this->nume;
+}
+
+Proprietar& Proprietar::operator=(const Proprietar& ob)
+{
+    if(this != &ob)
+    {
+        if(this->nume != NULL) delete[] this->nume;
+        this->nume = new char[strlen(ob.nume) + 1];
+        strcpy(this->nume,ob.nume);
+        this->data_nasterii = ob.data_nasterii;
+    }
+    return *this;
+}
+
+istream& operator >> (istream& in, Proprietar& d)
+{
+    char aux[255];
+    in >> aux;
+    d.nume = new char[strlen(aux)+1];
+    strcpy(d.nume,aux);
+    in >> d.data_nasterii;
+    return in;
+}
+
+ostream& operator <<(ostream& out, Proprietar& d)
+{
+    out << d.nume << " " << d.data_nasterii << endl;
+    return out;
+}
+
+class Casa
+{
+    char *oras;
+    int nrProprietari;
+    Proprietar *Prop;
+public:
+    Casa();
+    Casa(char *c);
+    Casa(const Casa&);
+    ~Casa();
+    Casa& operator=(const Casa&);
+    const Casa operator+=(const Proprietar&);
+    friend const Casa operator+=(const Casa&, const Proprietar&);
+    friend istream& operator >> (istream&, Casa&);
+    friend ostream& operator << (ostream&, Casa&);
+};
+
+Casa::Casa()
+{
+    oras = new char [51];
+    nrProprietari = 0;
+    Prop = NULL;
+}
+
+Casa::Casa(char *c)
+{
+    oras = new char[strlen(c)+1];
+    strcpy(oras,c);
+    Prop = NULL;
+    nrProprietari = 0;
+}
+
+Casa::Casa(const Casa& ct)
+{
+    oras = new char[strlen(ct.oras)+1];
+    strcpy(oras,ct.oras);
+    nrProprietari = ct.nrProprietari;
+    Prop = new Proprietar[nrProprietari];
+    for(int i = 0; i < nrProprietari; i++)
+    {
+        Prop[i] = ct.Prop[i];
+    }
+}
+
+Casa::~Casa()
+{
+    if(oras != NULL)
+        delete [] oras;
+    if(Prop != NULL)
+        delete [] Prop;
+}
+
+Casa& Casa::operator=(const Casa& ct)
+{
+    if(this != &ct)
+    {
+        oras = new char[strlen(ct.oras)+1];
+        strcpy(oras,ct.oras);
+        nrProprietari = ct.nrProprietari;
+        Prop = new Proprietar[nrProprietari];
+        for(int i = 0; i < nrProprietari; i++)
+        {
+            Prop[i] = ct.Prop[i];
+        }
+    }
+    return *this;
+}
+
+const Casa Casa::operator+=(const Proprietar& pr)
+{
+    nrProprietari=this->nrProprietari +1;
+    Proprietar *aux = new Proprietar[nrProprietari];
+    for(int  i= 0; i < nrProprietari - 1; i++)
+    {
+        aux[i] = Prop[i];
+    }
+    aux[nrProprietari - 1] = pr;
+    delete [] Prop;
+    Prop = aux;
+    return *this;
+}
+
+const Casa operator+=(const Casa& ct, const Proprietar& pr)
+{
+    Casa rez;
+    rez.oras = new char[strlen(ct.oras)+1];
+    strcpy(rez.oras,ct.oras);
+    rez.nrProprietari = ct.nrProprietari + 1;
+    rez.Prop = new Proprietar[rez.nrProprietari];
+    for(int  i= 0; i < rez.nrProprietari - 1; i++)
+    {
+        rez.Prop[i] = ct.Prop[i];
+    }
+    rez.Prop[rez.nrProprietari - 1] = pr;
+    return rez;
+}
+
+istream& operator>>(istream& in, Casa& c)
+{
+    char aux[255];
+    in >> aux;
+    c.oras = new char[strlen(aux)+1];
+    strcpy(c.oras,aux);
+    in >>c.nrProprietari;
+    c.Prop = new Proprietar[c.nrProprietari];
+    for(int i = 0; i < c.nrProprietari; i++)
+    {
+        in >>c.Prop[i];
+    }
+    return in;
+}
+
+ostream& operator<<(ostream& out, Casa& c)
+{
+    out<<c.oras<<endl;
+    for(int  i = 0; i < c.nrProprietari; i++)
+    {
+        out<<c.Prop[i];
+    }
+    out << endl;
+    return out;
+}
+
+int main()
+{
+    Data d1(15,"iulie",1975), d2 = d1;
+    Proprietar p1("Ionescu",d1), p2("Popescu",2,"ianuarie",1980);
+    Casa c1("Bucuresti"), c2, c3;
+
+    c1 += p1; // adauga proprietarul p1 in lista de proprietari din casa c1
+    c1 += p2; // adauga proprietarul p2 in lista de proprietari din casa c1
+
+    cout << c1;
+
+    cin >> c2;
+
+    c3 = c2;
+
+    cout << c3;
+
+    return 0;
+}
+

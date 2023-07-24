@@ -1,0 +1,437 @@
+#include <iostream>
+#include <cstring>
+#include <vector>
+#include <typeinfo>
+#include <algorithm>
+
+using namespace std;
+
+class Locuinta
+{
+protected:
+    string numeClient;
+    int suprafataUtila;
+    float discount;
+    int X,Y;
+public:
+    friend class Meniu;
+    virtual void citire()
+    {
+        cout << "Numele Clientului: ";
+        cin >> numeClient;
+        cout << "Suprafata Utila: ";
+        cin >> suprafataUtila;
+        cout << "Discount: ";
+        cin >> discount;
+    }
+    virtual void afisare()
+    {
+        cout << numeClient << " " << suprafataUtila << " " << discount << "\n";
+    }
+    Locuinta &operator=(const Locuinta& ob)
+    {
+        if(this != &ob)
+        {
+            this->numeClient = ob.numeClient;
+            this->suprafataUtila = ob.suprafataUtila;
+            this->discount = ob.discount;
+        }
+        return *this;
+    }
+    Locuinta(string n, int s, float d)
+    {
+        numeClient = n;
+        suprafataUtila = s;
+        discount = d;
+    }
+    Locuinta()
+    {
+        numeClient = " ";
+        suprafataUtila = 0;
+        discount = 0.0;
+    }
+    ~Locuinta()
+    {
+        if(suprafataUtila != 0)
+            suprafataUtila = 0;
+        discount = 0.0;
+        numeClient = " ";
+    }
+    Locuinta(const Locuinta &ob)
+    {
+        numeClient = ob.numeClient;
+        suprafataUtila = ob.suprafataUtila;
+        discount = ob.discount;
+    }
+    virtual double CalculChirie(int X,int Y) = 0;
+    friend istream &operator>>(istream &, Locuinta&);
+    friend ostream &operator<<(ostream &, Locuinta&);
+};
+
+istream &operator>>(istream &in, Locuinta &l)
+{
+    cout<<"Numele clientului:"<<endl;
+    in >> l.numeClient;
+    cout << "Suprafata Utila: ";
+    in >> l.suprafataUtila;
+    cout << "Discount: ";
+    in >> l.discount;
+    return in;
+}
+ostream &operator<<(ostream &out,Locuinta &ol)
+{
+    out<<ol.numeClient<<" "<<ol.suprafataUtila<<" "<<ol.discount<<endl;
+    return out;
+}
+
+class Apartament : virtual public Locuinta
+{
+protected:
+    int etaj;
+public:
+    void citire()
+    {
+        cout << "Etaj: ";
+        cin >> etaj;
+        Locuinta::citire();
+    }
+    void afisare()
+    {
+        cout << "Apartament" << " ";
+        cout << etaj << " ";
+        Locuinta::afisare();
+    }
+    Apartament(int e)
+    {
+        etaj = e;
+
+    }
+    Apartament()
+    {
+        etaj = 0;
+    }
+    ~Apartament()
+    {
+        if(etaj != 0) etaj = 0;
+    }
+    Apartament(const Apartament &e)
+    {
+        etaj = e.etaj;
+    }
+    Apartament &operator=(const Apartament& ob)
+    {
+        if(this != &ob)
+            this->etaj = ob.etaj;
+        return *this;
+    }
+    double CalculChirie(int X, int Y)
+    {
+        string s;
+        cin>>s;
+        float formula;
+        try
+        {
+            if(s=="DA")
+                throw 1;
+            else
+                throw 0;
+
+        }
+        catch(int Y)
+        {
+            if(Y==1)
+                formula = X*suprafataUtila*(1-Y*discount/100.0);
+            else if(Y==0)
+                formula = X*suprafataUtila;
+            return formula;
+        }
+    }
+    friend istream &operator>>(istream &, Apartament&);
+    friend ostream &operator<<(ostream &, Apartament&);
+};
+istream &operator>>(istream &in, Apartament &a)
+{
+    cout <<"Etaj: ";
+    cin >> a.etaj;
+    return in;
+}
+ostream &operator<<(ostream &out,Apartament &oa)
+{
+    out << "Apartament ";
+    out<< oa.etaj <<endl;
+    return out;
+}
+
+class Casa : virtual public Locuinta
+{
+protected:
+    int suprafataCurte;
+    static float procent_formula;
+public:
+    static float get_formula();
+    static void set_formula(float formula);
+    void citire()
+    {
+        cout << "Suprafata: ";
+        cin >> suprafataCurte;
+        Locuinta::citire();
+    }
+    void afisare()
+    {
+        cout << "Casa ";
+        cout << suprafataCurte << " ";
+        Locuinta::afisare();
+    }
+    Casa &operator=(const Casa& ob)
+    {
+        if(this != &ob)
+            this->suprafataCurte = ob.suprafataCurte;
+        return *this;
+    }
+    Casa(int sc)
+    {
+        suprafataCurte = sc;
+    }
+    Casa()
+    {
+        suprafataCurte = 0;
+    }
+    ~Casa()
+    {
+        if (suprafataCurte != 0) suprafataCurte = 0;
+    }
+    double CalculChirie(int X, int Y)
+    {
+        string s;
+        cin>>s;
+        float formula;
+        try
+        {
+            if(s=="DA")
+                throw 1;
+            else
+                throw 0;
+
+        }
+        catch(int Y)
+        {
+            if(Y==1)
+                formula = X*(suprafataUtila + procent_formula*suprafataCurte) * (1-Y*discount/100.0);
+            else if(Y==0)
+                formula = X*(suprafataUtila + procent_formula*suprafataCurte);
+            return formula;
+        }
+    }
+    friend istream &operator>>(istream &, Casa&);
+    friend ostream &operator<<(ostream &, Casa&);
+};
+
+float Casa::procent_formula = 0.2;
+float Casa::get_formula()
+{
+    return procent_formula;
+}
+void Casa::set_formula(float formula)
+{
+    procent_formula = formula;
+}
+
+istream &operator>>(istream &in, Casa &c)
+{
+    cout << "Suprafata Curte: ";
+    in >> c.suprafataCurte;
+    return in;
+}
+ostream &operator<<(ostream &out,Casa &oc)
+{
+    out << "Casa ";
+    out<< oc.suprafataCurte << " ";
+    return out;
+}
+
+class AgentieImobiliara
+{
+    vector <Locuinta *> v;
+    string nume, prenume, data;
+public:
+    void citire()
+    {
+        cout << "Numele chiriasului: ";
+        cin >> nume;
+        cout << "Prenumele chiriasului: ";
+        cin >> prenume;
+        cout << "Luna in care a inchiriat locuinta: ";
+        cin >> data;
+        //citire locuinte
+        int x = 1;
+        while(x != 0)
+        {
+            string loc;
+            cout << "Doriti Casa sau Apartament? ";
+            cin >> loc;
+            if(loc == "Casa")
+                v.push_back(new Casa());
+            else
+                v.push_back(new Apartament());
+
+            (*v.back()).citire();
+            cout << "Mai doriti altceva? Da-1 Nu-0 ";
+            cin >> x;
+        }
+    }
+    void afisare()
+    {
+        cout << "In luna " << data << " " << nume << " " << prenume << " a cumparat urmatoarele locuinte: ";
+        for(auto p = v.begin(); p != v.end(); p++)
+            (**p).afisare();
+    }
+
+    friend istream& operator >> (istream&, AgentieImobiliara&);
+    friend ostream& operator << (ostream&, AgentieImobiliara&);
+    friend class Meniu;
+};
+
+istream& operator >> (istream& in, AgentieImobiliara& ob)
+{
+    cout << "Numele chiriasului: ";
+    in >> ob.nume;
+    cout << "Prenumele chiriasului: ";
+    in >> ob.prenume;
+    cout << "Luna in care a inchiriat locuinta: ";
+    in >> ob.data;
+    return in;
+}
+
+ostream& operator << (ostream& out, AgentieImobiliara& ob)
+{
+    out << "In luna " << ob.data << " " << ob.nume << " " << ob.prenume << " a cumparat: ";
+    for(auto p = ob.v.begin(); p != ob.v.end(); ++p)
+        (**p).afisare();
+
+    return out;
+}
+
+class Meniu
+{
+    vector <Locuinta*> vl;
+    vector <AgentieImobiliara> va;
+    AgentieImobiliara A;
+public:
+    void adauga_locuinta(string s)
+    {
+        if(s == "Apartament")
+            vl.push_back(new Apartament());
+
+        else if(s == "Casa")
+            vl.push_back(new Casa());
+      (*vl.back()).citire();
+    }
+    void adauga_AgentieImobiliara()
+    {
+        AgentieImobiliara a;
+        a.citire();
+        va.push_back(a);
+    }
+    void afisare_agentieimobiliara()
+    {
+        for(auto p = va.begin(); p != va.end(); p++)
+            (*p).afisare();
+    }
+    void afis_meniu()
+    {
+        cout << "1. Adauga un nou tip de locuinta: \n";
+        cout << "2. Adauga o agentie imobiliara: \n";
+        cout << "3. Chiriile: \n";
+        cout << "4. Afisarea agentiei imobiliare: \n";
+        int x;
+        cout << "Optiunea? ";
+        cin >> x;
+        while(x >= 1 && x <= 4)
+        {
+            switch(x)
+            {
+            case 1:
+            {
+                string l;
+                cout << "Ce tip de locuinta doriti? ";
+                cin >> l;
+                adauga_locuinta(l);
+                break;
+            }
+            case 2:
+            {
+                adauga_AgentieImobiliara();
+                break;
+            }
+            case 3:
+            {
+                int x, y;
+                cout << "Valoarea chiriei standard RON/mp: \n";
+                cin >> x;
+                int nr = 0;
+                for (auto p = vl.begin(); p != vl.end(); p++)
+                {
+
+                    cout << "Se ia in considerare discountul pt locuinta? 0-Nu, 1-Da.\n";
+                    int ok = 1;
+                    while(ok)
+                    {
+                        cin>>y;
+                        try
+                        {
+                            throw (y == 0 || y == 1);
+                        }
+                        catch(bool res)
+                        {
+                            if (!res)
+                            {
+                                cout<<"Citire incorecta :(  Introduceti o valoare valida: 0- Nu, 1-Da\n";
+                                ok = 1;
+                            }
+                            else
+                            {
+                                ok = 0;
+                            }
+                        }
+                    }
+                    if (typeid(**p) == typeid(Apartament))
+                    {
+                        cout<<"Pentru locuinta: ";
+                        dynamic_cast<Apartament*>(*p)->afisare();
+                        cout<<"Chiria este: ";
+                        cout << dynamic_cast<Apartament *>(*p)->CalculChirie((*p)->X,(*p)->Y);
+                        cout <<" RON" <<endl;
+                    }
+                    else if(typeid(**p) == typeid(Casa))
+                    {
+                        cout<<"Pentru locuinta: ";
+                        dynamic_cast<Casa*>(*p)->afisare();
+                        cout<<"Chiria este: ";
+                        cout << dynamic_cast<Casa *>(*p)->CalculChirie((*p)->X,(*p)->Y);
+                        cout <<" RON"<< endl;
+                    }
+
+                }
+                break;
+            }
+            case 4:
+            {
+                afisare_agentieimobiliara();
+                break;
+            }
+            }
+            cout << "1. Adauga un nou tip de locuinta: \n";
+            cout << "2. Adauga o agentie imobiliara: \n";
+            cout << "3. Chiriile: \n";
+            cout << "4. Afisarea agentiei imobiliare: \n";
+            cout << "Alta optiune? ";
+            cin >> x;
+        }
+    };
+};
+
+int main(){
+    Meniu m;
+    m.afis_meniu();
+    return 0;
+}

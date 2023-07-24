@@ -1,0 +1,482 @@
+-- Creare tabela "COMPANIE"
+CREATE TABLE COMPANIE (
+  id_companie NUMBER(5) PRIMARY KEY,
+  nume_companie VARCHAR2(100),
+  adresa VARCHAR2(100),
+  nr_telefon VARCHAR2(10),
+  email VARCHAR2(100)
+);
+
+
+-- Creare tabela "PRODUSE"
+CREATE TABLE PRODUSE (
+  id_produs NUMBER(5) PRIMARY KEY,
+  nume VARCHAR2(100),
+  descriere VARCHAR2(100),
+  pret NUMBER,
+  id_companie NUMBER(5),
+  FOREIGN KEY (id_companie) REFERENCES COMPANIE (id_companie)
+);
+
+-- Ad?ugare cheie primar? pe coloana "id_produs" în tabela "PRODUSE"
+ALTER TABLE PRODUSE
+ADD CONSTRAINT pk_produse PRIMARY KEY (id_produs);
+
+
+-- Creare tabela "EVENIMENT"
+CREATE TABLE EVENIMENT (
+  id_eveniment NUMBER(5) PRIMARY KEY,
+  nume_eveniment VARCHAR2(100),
+  descriere VARCHAR2(100),
+  data_eveniment DATE,
+  locatie VARCHAR2(100),
+  id_companie NUMBER,
+  FOREIGN KEY (id_companie) REFERENCES COMPANIE(id_companie)
+);
+
+-- Creare tabela "STOCURI"
+CREATE TABLE STOCURI (
+  id_produs NUMBER(5),
+  cantitate NUMBER(4),
+  PRIMARY KEY (id_produs),
+  FOREIGN KEY (id_produs) REFERENCES PRODUSE(id_produs)
+);
+
+-- Creare tabela "CATEGORII"
+CREATE TABLE CATEGORII (
+  id_categorie NUMBER(5) PRIMARY KEY,
+  nume_categorie VARCHAR2(100) NOT NULL,
+  id_produs NUMBER(5),
+  FOREIGN KEY (id_produs) REFERENCES PRODUSE (id_produs)
+);
+
+-- Creare tabela "PROMOTII"
+CREATE TABLE PROMOTII (
+  id_promotie NUMBER(5) PRIMARY KEY,
+  nume_promotie VARCHAR2(100) NOT NULL,
+  descriere VARCHAR2(100),
+  data_inceput DATE,
+  data_sfarsit DATE,
+  id_produs NUMBER(5),
+  FOREIGN KEY (id_produs) REFERENCES PRODUSE (id_produs)
+);
+
+-- Creare tabela "RECENZII"
+CREATE TABLE RECENZII (
+  id_recenzie NUMBER(5) PRIMARY KEY,
+  descriere VARCHAR2(100),
+  id_produs NUMBER(5),
+  id_client NUMBER(5),
+  FOREIGN KEY (id_produs) REFERENCES PRODUSE (id_produs),
+  FOREIGN KEY (id_client) REFERENCES CLIENTI (id_client)
+);
+
+-- Creare tabela "CLIENTI"
+CREATE TABLE CLIENTI (
+  id_client NUMBER(5) PRIMARY KEY,
+  nume VARCHAR2(100),
+  adresa VARCHAR2(100),
+  nr_telefon VARCHAR2(10),
+  id_companie NUMBER(5),
+  FOREIGN KEY (id_companie) REFERENCES COMPANIE (id_companie)
+);
+
+-- Creare tabela "FACTURI"
+CREATE TABLE FACTURI (
+  id_factura NUMBER(5) PRIMARY KEY,
+  suma_totala NUMBER(10, 2),
+  data_plata DATE,
+  id_comanda NUMBER(5),
+  FOREIGN KEY (id_comanda) REFERENCES COMENZI (id_comanda)
+);
+
+-- Creare tabela "COMENZI"
+CREATE TABLE COMENZI (
+  id_comanda NUMBER(5) PRIMARY KEY,
+  data DATE,
+  produs_comandat VARCHAR2(100),
+  cantitate NUMBER(4),
+  adresa_livrare VARCHAR2(100),
+  id_client NUMBER(5),
+  FOREIGN KEY (id_client) REFERENCES CLIENTI (id_client)
+);
+
+-- Creare tabela "LIVRARI"
+CREATE TABLE LIVRARI (
+  id_livrare NUMBER(5) PRIMARY KEY,
+  data_livrare DATE,
+  adresa_livrare VARCHAR2(100),
+  id_comanda NUMBER(5),
+  FOREIGN KEY (id_comanda) REFERENCES COMENZI (id_comanda)
+);
+
+-- Crearea tabelului "RECLAMATIE"
+CREATE TABLE RECLAMATIE (
+  id_reclamatie NUMBER(5) PRIMARY KEY,
+  descriere VARCHAR2(100),
+  data_reclamatie DATE,
+  id_client NUMBER(5),
+  FOREIGN KEY (id_client) REFERENCES CLIENTI (id_client)
+);
+
+-- Crearea tabelului "ANGAJATI"
+CREATE TABLE ANGAJATI (
+  id_angajat NUMBER(5) PRIMARY KEY,
+  nume VARCHAR2(100),
+  prenume VARCHAR2(100),
+  pozitie VARCHAR2(100),
+  id_companie NUMBER(5),
+  FOREIGN KEY (id_companie) REFERENCES COMPANIE (id_companie)
+);
+
+select * from companie;
+create sequence seq_companie start with 1000 increment by 1 maxvalue 9999 nocycle nocache;
+
+INSERT INTO COMPANIE (id_companie, nume_companie, adresa, nr_telefon, email)
+VALUES (seq_companie.nextval, 'Valu', 'Frumusani', '0753642612', 'valu@gmail.com');
+
+INSERT INTO COMPANIE (id_companie, nume_companie, adresa, nr_telefon, email)
+VALUES (seq_companie.nextval, 'Aliax', 'Muzicalilor', '0782915342', 'aliax@yahoo.com');
+
+INSERT INTO COMPANIE (id_companie, nume_companie, adresa, nr_telefon, email)
+VALUES (seq_companie.nextval, 'Mozila', 'Uratsani', '0764342631', 'mozila@gmail.com');
+
+INSERT INTO COMPANIE (id_companie, nume_companie, adresa, nr_telefon, email)
+VALUES (seq_companie.nextval, 'Ericson', 'Academiei', '0753531712', 'ericson@gmail.com');
+
+INSERT INTO COMPANIE (id_companie, nume_companie, adresa, nr_telefon, email)
+VALUES (seq_companie.nextval, 'Piesu', 'Universitate', '0736612643', 'piesu@gmail.com');
+
+select * from angajati;
+create sequence seq_angajat start with 1000 increment by 3 maxvalue 9999 nocycle nocache;
+
+INSERT INTO ANGAJATI (id_angajat, nume, prenume, pozitie, id_companie)
+VALUES (seq_angajat.nextval, 'Marinescu', 'Raul', 'Manager', 1009);
+
+INSERT INTO ANGAJATI (id_angajat, nume, prenume, pozitie, id_companie)
+VALUES (seq_angajat.nextval, 'Buga', 'Ionut', 'Receptioner', 1008);
+
+INSERT INTO ANGAJATI (id_angajat, nume, prenume, pozitie, id_companie)
+VALUES (seq_angajat.nextval, 'Petrescu', 'Marian', 'Manager', 1011);
+
+INSERT INTO ANGAJATI (id_angajat, nume, prenume, pozitie, id_companie)
+VALUES (seq_angajat.nextval, 'Bratu', 'Cristian', 'Asistent', 1012);
+
+INSERT INTO ANGAJATI (id_angajat, nume, prenume, pozitie, id_companie)
+VALUES (seq_angajat.nextval, 'Musat', 'Petru', 'HR', 1012);
+
+INSERT INTO ANGAJATI (id_angajat, nume, prenume, pozitie, id_companie)
+VALUES (seq_angajat.nextval, 'Mares', 'Andrei', 'Vice', 1012);
+
+INSERT INTO ANGAJATI (id_angajat, nume, prenume, pozitie, id_companie)
+VALUES (seq_angajat.nextval, 'Ene', 'Cristian', 'Director', 1012);
+
+INSERT INTO ANGAJATI (id_angajat, nume, prenume, pozitie, id_companie)
+VALUES (seq_angajat.nextval, 'Voiculescu', 'Maria', 'HR', 1010);
+
+INSERT INTO ANGAJATI (id_angajat, nume, prenume, pozitie, id_companie)
+VALUES (seq_angajat.nextval, 'Predescu', 'Petru', 'Supervizor', 1010);
+
+select * from produse;
+create sequence seq_produse start with 1 increment by 4 maxvalue 99 nocycle nocache;
+
+INSERT INTO PRODUSE (id_produs, nume, descriere, pret, id_companie)
+VALUES (seq_produse.nextval, 'Laptop HP', 'Laptop performant cu procesor Intel i7 ?i 16GB RAM',
+2000.99, 1009);
+
+INSERT INTO PRODUSE (id_produs, nume, descriere, pret, id_companie)
+VALUES (seq_produse.nextval, 'Telefon Samsung', 'Telefon inteligent cu 256 GB', 1999.99, 1010);
+
+INSERT INTO PRODUSE (id_produs, nume, descriere, pret, id_companie)
+VALUES (seq_produse.nextval, 'Televizor LG', 'Televizor LED Full HD', 3100, 1012);
+
+INSERT INTO PRODUSE (id_produs, nume, descriere, pret, id_companie)
+VALUES (seq_produse.nextval, 'Consola PS5', 'Consola cu 825 GB', 2999.99, 1011);
+
+INSERT INTO PRODUSE (id_produs, nume, descriere, pret, id_companie)
+VALUES (seq_produse.nextval, 'Laptop Lenovo', 'Laptop performant cu procesor Intel i5 ?i 8GB RAM',
+1500,1010);
+
+INSERT INTO PRODUSE (id_produs, nume, descriere, pret, id_companie)
+VALUES (seq_produse.nextval, 'Periuta Oral B', 'Albeste dintii', 99.99, 1009);
+
+INSERT INTO PRODUSE (id_produs, nume, descriere, pret, id_companie)
+VALUES (seq_produse.nextval, 'Aparat de ras Phillips', 'Rade', 200.50, 1011);
+
+INSERT INTO PRODUSE (id_produs, nume, descriere, pret, id_companie)
+VALUES (seq_produse.nextval, 'Consola XBOX', 'Consola cu 1TB', 3499.99, 1009);
+
+INSERT INTO PRODUSE (id_produs, nume, descriere, pret, id_companie)
+VALUES (seq_produse.nextval, 'Televizor Samsung', 'Televizor 4K', 5000.50, 1008);
+
+INSERT INTO PRODUSE (id_produs, nume, descriere, pret, id_companie)
+VALUES (seq_produse.nextval, 'Telefon Iphone', 'Telefon cu 256GB Galben', 4679.99, 1009);
+
+INSERT INTO PRODUSE (id_produs, nume, descriere, pret, id_companie)
+VALUES (seq_produse.nextval, 'Aparat de ras Noname', 'Rade mai bine decat Philips', 300.00, 1010);
+
+INSERT INTO PRODUSE (id_produs, nume, descriere, pret, id_companie)
+VALUES (seq_produse.nextval, 'Consola Nintendo', 'Consola 500GB', 1700, 1011);
+
+select * from eveniment;
+
+INSERT INTO EVENIMENT (id_eveniment, nume_eveniment, descriere, data_eveniment, locatie, id_companie)
+VALUES (2191, 'Serata muzical? în aer liber', 'Muzica in aer liber',
+to_date('01-05-2023', 'DD-MM-YYYY'), 'Bucuresti', 1012);
+
+INSERT INTO EVENIMENT (id_eveniment, nume_eveniment, descriere, data_eveniment, locatie, id_companie)
+VALUES (2193, 'Spectacol de dans contemporan', 'Se danseaza',
+to_date('21-07-2023', 'DD-MM-YYYY'), 'Brasov', 1011);
+
+INSERT INTO EVENIMENT (id_eveniment, nume_eveniment, descriere, data_eveniment, locatie, id_companie)
+VALUES (2194, 'Expozi?ie de art? modern?', 'Arta moderna', 
+to_date('30-09-2023', 'DD-MM-YYYY'), 'Ploiesti', 1010);
+
+INSERT INTO EVENIMENT (id_eveniment, nume_eveniment, descriere, data_eveniment, locatie, id_companie)
+VALUES (1997, 'Concert live al trupei de rock', 'Se canta numai rock',
+to_date('12-02-2023', 'DD-MM-YYYY'), 'Pitesti', 1011);
+
+INSERT INTO EVENIMENT (id_eveniment, nume_eveniment, descriere, data_eveniment, locatie, id_companie)
+VALUES (2190, 'Seminar de dezvoltare personal? ?i leadership', 'Pentru a deveni cea mai buna versiune',
+to_date('17-12-2023', 'DD-MM-YYYY'), 'Iasi', 1009);
+
+INSERT INTO EVENIMENT (id_eveniment, nume_eveniment, descriere, data_eveniment, locatie, id_companie)
+VALUES (2005, 'Pancakes', 'Clatite si clatite',
+to_date('06-06-2023', 'DD-MM-YYYY'), 'Constanta', 1008);
+
+select * from clienti;
+INSERT INTO CLIENTI (id_client, nume, adresa, nr_telefon, id_companie)
+VALUES (1, 'Protopescu Ianis', 'Str.Mariuca', '0753601287', 1008);
+
+INSERT INTO CLIENTI (id_client, nume, adresa, nr_telefon, id_companie)
+VALUES (2, 'Zaharia Marian', 'Str.Florilor', '0722518742', 1011);
+
+INSERT INTO CLIENTI (id_client, nume, adresa, nr_telefon, id_companie)
+VALUES (3, 'Bocancea Marius', 'Str.Cheilor', '0722518742', 1011);
+
+INSERT INTO CLIENTI (id_client, nume, adresa, nr_telefon, id_companie)
+VALUES (4, 'Tosa Adonis', 'Str.Studentilor', '0757328742', 1009);
+
+INSERT INTO CLIENTI (id_client, nume, adresa, nr_telefon, id_companie)
+VALUES (5, 'Vicol Adrian', 'Str.Mareelor', '0727918342', 1012);
+
+INSERT INTO CLIENTI (id_client, nume, adresa, nr_telefon, id_companie)
+VALUES (6, 'Mares Andreea', 'Str.Colonelului', '0722564382', 1009);
+
+select * from categorii;
+
+INSERT INTO CATEGORII (id_categorie, nume_categorie, id_produs)
+VALUES (1, 'Console', 49);
+
+INSERT INTO CATEGORII (id_categorie, nume_categorie, id_produs)
+VALUES (11, 'Console', 81);
+
+INSERT INTO CATEGORII (id_categorie, nume_categorie, id_produs)
+VALUES (16, 'Console', 65);
+
+INSERT INTO CATEGORII (id_categorie, nume_categorie, id_produs)
+VALUES (2, 'Telefoane', 41);
+
+INSERT INTO CATEGORII (id_categorie, nume_categorie, id_produs)
+VALUES (21, 'Telefoane', 73);
+
+INSERT INTO CATEGORII (id_categorie, nume_categorie, id_produs)
+VALUES (7, 'Laptop-uri', 37);
+
+INSERT INTO CATEGORII (id_categorie, nume_categorie, id_produs)
+VALUES (23, 'Laptop-uri', 53);
+
+INSERT INTO CATEGORII (id_categorie, nume_categorie, id_produs)
+VALUES (5, 'Aparate', 61);
+
+INSERT INTO CATEGORII (id_categorie, nume_categorie, id_produs)
+VALUES (10, 'Aparate', 57);
+
+INSERT INTO CATEGORII (id_categorie, nume_categorie, id_produs)
+VALUES (37, 'Televizoare', 69);
+
+INSERT INTO CATEGORII (id_categorie, nume_categorie, id_produs)
+VALUES (33, 'Televizoare', 45);
+
+select * from comenzi;
+
+INSERT INTO COMENZI (id_comanda, data, produs_comandat, cantitate, adresa_livrare, id_client)
+VALUES (5001, to_date('12-02-2023', 'DD-MM-YYYY'), 'Laptop', 4000, 'Strada Mariuca', 1);
+
+INSERT INTO COMENZI (id_comanda, data, produs_comandat, cantitate, adresa_livrare, id_client)
+VALUES (5002, to_date('27-05-2023', 'DD-MM-YYYY'), 'Telefon mobil', 1200, 'Strada Mareelor', 4);
+
+INSERT INTO COMENZI (id_comanda, data, produs_comandat, cantitate, adresa_livrare, id_client)
+VALUES (5003, to_date('14-10-2023', 'DD-MM-YYYY'), 'Televizor', 9000, 'Strada Cheilor', 3);
+
+INSERT INTO COMENZI (id_comanda, data, produs_comandat, cantitate, adresa_livrare, id_client)
+VALUES (5004, to_date('20-12-2023', 'DD-MM-YYYY'), 'Frigider', 9999, 'Strada Mariuca', 1);
+
+INSERT INTO COMENZI (id_comanda, data, produs_comandat, cantitate, adresa_livrare, id_client)
+VALUES (5005, to_date('12-04-2023', 'DD-MM-YYYY'), 'Cuptor', 9876, 'Strada Florilor', 2);
+
+INSERT INTO COMENZI (id_comanda, data, produs_comandat, cantitate, adresa_livrare, id_client)
+VALUES (5006, to_date('13-11-2023', 'DD-MM-YYYY'), 'Joc video', 199, 'Strada Studentilor', 6);
+
+INSERT INTO COMENZI (id_comanda, data, produs_comandat, cantitate, adresa_livrare, id_client)
+VALUES (5007, to_date('21-11-2023', 'DD-MM-YYYY'), 'Toaster', 100, 'Strada Martisoarelor', 2);
+
+INSERT INTO COMENZI (id_comanda, data, produs_comandat, cantitate, adresa_livrare, id_client)
+VALUES (5008, to_date('01-02-2023', 'DD-MM-YYYY'), 'Casti', 50, 'Strada Fier Vechi', 6);
+
+INSERT INTO COMENZI (id_comanda, data, produs_comandat, cantitate, adresa_livrare, id_client)
+VALUES (5009, to_date('15-09-2023', 'DD-MM-YYYY'), 'MP3', 199, 'Strada Caminului', 1);
+
+select * from facturi;
+
+INSERT INTO FACTURI (id_factura, suma_totala, data_plata, id_comanda)
+VALUES (3611, 2100.50, to_date('12-02-2023', 'DD-MM-YYYY'), 5001);
+
+INSERT INTO FACTURI (id_factura, suma_totala, data_plata, id_comanda)
+VALUES (3621, 1175.25, to_date('27-05-2023', 'DD-MM-YYYY'), 5002);
+
+INSERT INTO FACTURI (id_factura, suma_totala, data_plata, id_comanda)
+VALUES (3630, 3000, to_date('14-10-2023', 'DD-MM-YYYY'), 5003);
+
+INSERT INTO FACTURI (id_factura, suma_totala, data_plata, id_comanda)
+VALUES (3633, 2199.99, to_date('20-12-2023', 'DD-MM-YYYY'), 5004);
+
+INSERT INTO FACTURI (id_factura, suma_totala, data_plata, id_comanda)
+VALUES (3642, 1999.99, to_date('12-04-2023', 'DD-MM-YYYY'), 5005);
+
+INSERT INTO FACTURI (id_factura, suma_totala, data_plata, id_comanda)
+VALUES (3645, 70.50, to_date('13-11-2023', 'DD-MM-YYYY'), 5006);
+
+select * from reclamatie;
+
+INSERT INTO RECLAMATIE (id_reclamatie, descriere, data_reclamatie, id_client)
+VALUES (91, 'nu merg tastele', to_date('05-03-2023', 'DD-MM-YYYY'), 1);
+
+INSERT INTO RECLAMATIE (id_reclamatie, descriere, data_reclamatie, id_client)
+VALUES (92, 'nu se aprinde focul', to_date('15-04-2023', 'DD-MM-YYYY'), 2);
+
+INSERT INTO RECLAMATIE (id_reclamatie, descriere, data_reclamatie, id_client)
+VALUES (101, 'se blocheaza din 5 in 5 minute', to_date('01-11-2023', 'DD-MM-YYYY'), 3);
+
+INSERT INTO RECLAMATIE (id_reclamatie, descriere, data_reclamatie, id_client)
+VALUES (102, 'e zgariat discul', to_date('13-11-2023', 'DD-MM-YYYY'), 6);
+
+INSERT INTO RECLAMATIE (id_reclamatie, descriere, data_reclamatie, id_client)
+VALUES (201, 'mi-a venit discul indoit', to_date('15-12-2023', 'DD-MM-YYYY'), 6);
+
+INSERT INTO RECLAMATIE (id_reclamatie, descriere, data_reclamatie, id_client)
+VALUES (202, 'nu merge touch-ul', to_date('10-07-2023', 'DD-MM-YYYY'), 4);
+
+INSERT INTO RECLAMATIE (id_reclamatie, descriere, data_reclamatie, id_client)
+VALUES (301, 'ecranul spart la momentul sosirii', to_date('12-02-2023', 'DD-MM-YYYY'), 1);
+
+INSERT INTO RECLAMATIE (id_reclamatie, descriere, data_reclamatie, id_client)
+VALUES (302, 'are scurgeri', to_date('22-05-2023', 'DD-MM-YYYY'), 2);
+
+select * from stocuri;
+
+INSERT INTO STOCURI (id_produs, cantitate)
+VALUES (37, 3400);
+
+INSERT INTO STOCURI (id_produs, cantitate)
+VALUES (61, 400);
+
+INSERT INTO STOCURI (id_produs, cantitate)
+VALUES (57, 490);
+
+INSERT INTO STOCURI (id_produs, cantitate)
+VALUES (45, 9999);
+
+INSERT INTO STOCURI (id_produs, cantitate)
+VALUES (49, 7999);
+
+INSERT INTO STOCURI (id_produs, cantitate)
+VALUES (53, 2900);
+
+INSERT INTO STOCURI (id_produs, cantitate)
+VALUES (41, 1800);
+
+INSERT INTO STOCURI (id_produs, cantitate)
+VALUES (65, 2105);
+
+INSERT INTO STOCURI (id_produs, cantitate)
+VALUES (69, 4600);
+
+INSERT INTO STOCURI (id_produs, cantitate)
+VALUES (73, 7800);
+
+INSERT INTO STOCURI (id_produs, cantitate)
+VALUES (77, 150);
+
+INSERT INTO STOCURI (id_produs, cantitate)
+VALUES (81, 2971);
+
+select * from recenzii;
+
+INSERT INTO RECENZII (id_recenzie, descriere, id_produs, id_client)
+VALUES (1234, 'Se aprinde si merge rapid', 37, 1);
+
+INSERT INTO RECENZII (id_recenzie, descriere, id_produs, id_client)
+VALUES (1235, 'Calitatea pozelor ma fascineaza', 41, 4);
+
+INSERT INTO RECENZII (id_recenzie, descriere, id_produs, id_client)
+VALUES (1236, 'Cu asemenea televizor ma simt ca la cinema', 45, 3);
+
+INSERT INTO RECENZII (id_recenzie, descriere, id_produs, id_client)
+VALUES (1237, 'Fiul meu e foarte multumit de aceasta consola. Se joaca in fiecare zi', 49, 6);
+
+INSERT INTO RECENZII (id_recenzie, descriere, id_produs, id_client)
+VALUES (1238, 'Foarte bun pentru munca', 53, 2);
+
+INSERT INTO RECENZII (id_recenzie, descriere, id_produs, id_client)
+VALUES (1239, 'Intr-o saptamana mi-am albit dintii', 57, 4);
+
+INSERT INTO RECENZII (id_recenzie, descriere, id_produs, id_client)
+VALUES (1240, 'Tunde bine', 61, 5);
+
+INSERT INTO RECENZII (id_recenzie, descriere, id_produs, id_client)
+VALUES (1241, 'Raport calitate-pret', 37, 5);
+
+INSERT INTO RECENZII (id_recenzie, descriere, id_produs, id_client)
+VALUES (1242, 'Tine mult bateria', 37, 2);
+
+INSERT INTO RECENZII (id_recenzie, descriere, id_produs, id_client)
+VALUES (1243, 'Are grija de dintii tai', 57, 3);
+
+INSERT INTO RECENZII (id_recenzie, descriere, id_produs, id_client)
+VALUES (1244, 'Tund mai bine decat frizeru', 61, 1);
+
+select * from promotii;
+
+INSERT INTO PROMOTII (id_promotie, nume_promotie, descriere, data_inceput, data_sfarsit, id_produs)
+VALUES (191, 'Reduceri de var?', 'Reduceri speciale pentru sezonul estival',
+to_date('30-04-2023', 'DD-MM-YYYY'), to_date('05-05-2023', 'DD-MM-YYYY'), 37);
+
+INSERT INTO PROMOTII (id_promotie, nume_promotie, descriere, data_inceput, data_sfarsit, id_produs)
+VALUES (291, 'Oferta special? de Cr?ciun', 'Reducere de 20% la produsele selectate',
+to_date('11-07-2023', 'DD-MM-YYYY'), to_date('14-07-2023', 'DD-MM-YYYY'), 41);
+
+INSERT INTO PROMOTII (id_promotie, nume_promotie, descriere, data_inceput, data_sfarsit, id_produs)
+VALUES (391, 'S?pt?mâna reducerilor', 'Discounturi de pân? la 50% la toate produsele',
+to_date('26-05-2023', 'DD-MM-YYYY'), to_date('30-05-2023', 'DD-MM-YYYY'), 41);
+
+INSERT INTO PROMOTII (id_promotie, nume_promotie, descriere, data_inceput, data_sfarsit, id_produs)
+VALUES (491, 'Oferta lunii', 'Cump?r? un produs ?i prime?ti al doilea la jum?tate de pre?',
+to_date('19-01-2023', 'DD-MM-YYYY'), to_date('20-01-2023', 'DD-MM-YYYY'), 45);
+
+INSERT INTO PROMOTII (id_promotie, nume_promotie, descriere, data_inceput, data_sfarsit, id_produs)
+VALUES (591, 'Weekendul reducerilor', 'Toate produsele cu 30% reducere doar în acest weekend',
+to_date('07-09-2023', 'DD-MM-YYYY'), to_date('10-07-2023', 'DD-MM-YYYY'), 61);
+
+INSERT INTO PROMOTII (id_promotie, nume_promotie, descriere, data_inceput, data_sfarsit, id_produs)
+VALUES (691, 'Promo?ie de lansare', 'Prime?ti un voucher de 20% reducere la prima ta comand? online',
+to_date('31-03-2023', 'DD-MM-YYYY'), to_date('03-04-2023', 'DD-MM-YYYY'), 53);
+
+INSERT INTO PROMOTII (id_promotie, nume_promotie, descriere, data_inceput, data_sfarsit, id_produs)
+VALUES (791, 'Super s?pt?mâna de reduceri', 'Oferte speciale ?i discounturi la toate
+categoriile de produse', to_date('04-04-2023', 'DD-MM-YYYY'), to_date('11-04-2023', 'DD-MM-YYYY'), 53);
+
+INSERT INTO PROMOTII (id_promotie, nume_promotie, descriere, data_inceput, data_sfarsit, id_produs)
+VALUES (891, 'Promo?ie exclusive online', 'Discount de 15% la toate produsele
+disponibile exclusiv online', to_date('20-04-2023', 'DD-MM-YYYY'), 
+to_date('20-04-2023', 'DD-MM-YYYY'), 57);

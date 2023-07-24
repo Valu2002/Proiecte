@@ -1,0 +1,77 @@
+body {
+    background-image: url('https://i2.wp.com/blogsmedia.lse.ac.uk/blogs.dir/9/files/2015/06/office-381228_640.jpg?fit=670%2C335&ssl=1');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    color: #FFFFFF;
+}
+
+td {
+    color: white;
+    font-size: 20px;
+    text-shadow:
+        0.07em 0 black,
+        0 0.07em black,
+        -0.07em 0 black,
+        0 -0.07em black;
+}
+
+.container{
+    width: 100%;
+    background-color: black;
+}
+
+.skillset{
+    color: #fff;
+    padding-right: 5px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.photoshop{
+    width: 50%;
+    background-color:red;
+    font-size: 20px
+}
+
+.microsoft{
+    width: 90%;
+    background-color:blue;
+    font-size: 20px
+}
+
+.linux{
+    width: 15%;
+    background-color:green;
+    font-size: 20px
+}
+
+.web{
+    width: 15%;
+    background-color:brown;
+    font-size: 20px
+}
+
+.python{
+    width: 75%;
+    background-color:indigo;
+    font-size: 20px
+}
+
+.htmlcss{
+    width: 25%;
+    background-color:darkkhaki;
+    font-size: 20px
+}
+
+.cplus{
+    width: 85%;
+    background-color:cadetblue;
+    font-size: 20px
+}
+
+.c{
+    width: 10%;
+    background-color:yellowgreen;
+    font-size: 20px
+}
