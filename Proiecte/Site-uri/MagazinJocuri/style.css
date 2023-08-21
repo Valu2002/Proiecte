@@ -197,28 +197,66 @@ hr {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-    width: 100%;
     padding-top: 3%;
-    padding-left: 30px;
-    padding-right: 15px;
+    align-items: center;
+    width:100%;
+}
+
+.poza3 {
+    height: 373px;
+    width: 33%;
+    margin-bottom: 20px;
+    box-shadow: 0px 3px 8px #000;
+    transition: all 300ms ease-in-out;
+    border-radius: 5px;
+    cursor:pointer;
+}
+
+.poza3:hover {
+    box-shadow: 0px 20px 30px;
+    width: 33.33%;
+    height: 376px;
+    border-radius: 5px;
+}
+
+.more {
+    display: none;
+}
+
+.btn {
+    display: block;
+    margin: 0 auto;
+}
+
+.show-more-btn {
+    color: blue;
+    font-size: 17px;
+    border-style: none;
+    background-color: white;
+    cursor:pointer;
+}
+
+.show-more-btn:hover{
+    border:solid lightgray;
+    border-radius: 10px;
+    background-color: lightgray;
+    color: darkblue;
 }
 
 .poza {
-    max-width: 1024px;
-    height: 350px;
-    margin: 0px;
-    width: 350px;
+    height: 373px;
+    width: 33%;
     margin-bottom: 20px;
     box-shadow: 0px 3px 8px #000;
     transition: all 300ms ease-in-out;
     border-radius: 15px;
-
+    cursor:pointer;
 }
 
 .poza:hover {
-    box-shadow: 0px 8px 30px;
-    width: 370px;
-    height: 370px;
+    box-shadow: 0px 20px 30px;
+    width: 33.33%;
+    height: 376px;
     border-radius: 15px;
 }
 
@@ -721,51 +759,6 @@ h {
     display: flex;
     justify-content: center;
     padding-top:10px;
-}
-
-.poza3 {
-    max-width: 700px;
-    height: 373px;
-    margin: 5px;
-    width: 373px;
-    margin-bottom: 20px;
-    box-shadow: 0px 3px 8px #000;
-    transition: all 300ms ease-in-out;
-    border-radius: 5px;
-    cursor:pointer;
-}
-
-.poza3:hover {
-    box-shadow: 0px 8px 20px;
-    width: 373px;
-    height: 373px;
-    border-radius: 5px;
-}
-
-.more {
-    display: none;
-}
-
-.btn {
-    padding-top: 10px;
-    padding-bottom: 10px;
-    display: block;
-    margin: 0 auto;
-}
-
-.show-more-btn {
-    color: blue;
-    font-size: 17px;
-    border-style: none;
-    background-color: white;
-    cursor:pointer;
-}
-
-.show-more-btn:hover{
-    border:solid lightgray;
-    border-radius: 10px;
-    background-color: lightgray;
-    color: darkblue;
 }
 
 
